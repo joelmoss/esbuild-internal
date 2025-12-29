@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ije/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/compat"
 )
 
 func TestLowerFunctionArgumentScope(t *testing.T) {

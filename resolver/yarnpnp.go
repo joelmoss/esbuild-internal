@@ -9,10 +9,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_parser"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_parser"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type pnpData struct {

@@ -7,11 +7,11 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type JSXOptions struct {

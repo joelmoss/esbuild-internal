@@ -9,15 +9,15 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/config"
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_lexer"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/renamer"
-	"github.com/ije/esbuild-internal/runtime"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_lexer"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/renamer"
+	"github.com/joelmoss/esbuild-internal/runtime"
 )
 
 // This parser does two passes:

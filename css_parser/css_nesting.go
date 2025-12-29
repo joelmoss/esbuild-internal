@@ -3,9 +3,9 @@ package css_parser
 import (
 	"fmt"
 
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 func (p *parser) lowerNestingInRule(rule css_ast.Rule, results []css_ast.Rule) []css_ast.Rule {

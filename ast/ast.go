@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type ImportKind uint8

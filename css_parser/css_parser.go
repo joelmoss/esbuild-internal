@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/config"
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/css_lexer"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/css_lexer"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 // This is mostly a normal CSS parser with one exception: the addition of

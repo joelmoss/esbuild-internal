@@ -30,9 +30,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ije/esbuild-internal/fs"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/resolver"
+	"github.com/joelmoss/esbuild-internal/fs"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/resolver"
 )
 
 // The time to wait between watch intervals

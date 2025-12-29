@@ -3,8 +3,8 @@ package cache
 import (
 	"sync"
 
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/runtime"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/runtime"
 )
 
 // This is a cache of the parsed contents of a set of files. The idea is to be

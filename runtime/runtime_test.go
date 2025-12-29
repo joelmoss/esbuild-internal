@@ -3,11 +3,11 @@ package runtime_test
 import (
 	"testing"
 
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/config"
-	"github.com/ije/esbuild-internal/js_parser"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/runtime"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/js_parser"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/runtime"
 )
 
 func TestUnsupportedFeatures(t *testing.T) {

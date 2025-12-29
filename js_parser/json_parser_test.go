@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_printer"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/test"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_printer"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/test"
 )
 
 func expectParseErrorJSON(t *testing.T, contents string, expected string) {

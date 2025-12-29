@@ -17,11 +17,11 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/runtime"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/runtime"
 )
 
 type entryPointKind uint8

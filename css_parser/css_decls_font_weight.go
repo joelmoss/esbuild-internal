@@ -3,8 +3,8 @@ package css_parser
 import (
 	"strings"
 
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/css_lexer"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/css_lexer"
 )
 
 func (p *parser) mangleFontWeight(token css_ast.Token) css_ast.Token {
