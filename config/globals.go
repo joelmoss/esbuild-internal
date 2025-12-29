@@ -4,9 +4,9 @@ import (
 	"math"
 	"sync"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/js_ast"
 )
 
 var processedGlobalsMutex sync.Mutex

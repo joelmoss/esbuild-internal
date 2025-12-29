@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 func diff(old string, new string, color bool) string {

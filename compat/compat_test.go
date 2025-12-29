@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ije/esbuild-internal/test"
+	"github.com/joelmoss/esbuild-internal/test"
 )
 
 func TestCompareVersions(t *testing.T) {

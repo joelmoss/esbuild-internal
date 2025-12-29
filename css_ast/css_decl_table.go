@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ije/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/helpers"
 )
 
 type D uint16

@@ -3,11 +3,11 @@ package cache
 import (
 	"sync"
 
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/css_parser"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_parser"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/css_parser"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_parser"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 // This cache intends to avoid unnecessarily re-parsing files in subsequent

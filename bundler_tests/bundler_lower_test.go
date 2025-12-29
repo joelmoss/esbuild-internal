@@ -7,8 +7,8 @@ package bundler_tests
 import (
 	"testing"
 
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/config"
 )
 
 var lower_suite = suite{

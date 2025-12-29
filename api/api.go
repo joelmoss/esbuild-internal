@@ -79,7 +79,7 @@ package api
 import (
 	"time"
 
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type SourceMap uint8

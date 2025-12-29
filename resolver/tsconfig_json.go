@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ije/esbuild-internal/cache"
-	"github.com/ije/esbuild-internal/config"
-	"github.com/ije/esbuild-internal/fs"
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_lexer"
-	"github.com/ije/esbuild-internal/js_parser"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/cache"
+	"github.com/joelmoss/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/fs"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_lexer"
+	"github.com/joelmoss/esbuild-internal/js_parser"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type TSConfigJSON struct {

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/css_lexer"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/css_lexer"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 type composesContext struct {

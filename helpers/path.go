@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/ije/esbuild-internal/fs"
+	"github.com/joelmoss/esbuild-internal/fs"
 )
 
 func IsInsideNodeModules(path string) bool {

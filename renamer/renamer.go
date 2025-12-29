@@ -7,9 +7,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/js_ast"
-	"github.com/ije/esbuild-internal/js_lexer"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/js_ast"
+	"github.com/joelmoss/esbuild-internal/js_lexer"
 )
 
 func ComputeReservedNames(moduleScopes []*js_ast.Scope, symbols ast.SymbolMap) map[string]uint32 {

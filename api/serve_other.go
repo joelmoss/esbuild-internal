@@ -28,9 +28,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ije/esbuild-internal/fs"
-	"github.com/ije/esbuild-internal/helpers"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/fs"
+	"github.com/joelmoss/esbuild-internal/helpers"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 ////////////////////////////////////////////////////////////////////////////////

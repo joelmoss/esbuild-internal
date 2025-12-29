@@ -4,11 +4,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ije/esbuild-internal/ast"
-	"github.com/ije/esbuild-internal/config"
-	"github.com/ije/esbuild-internal/css_parser"
-	"github.com/ije/esbuild-internal/logger"
-	"github.com/ije/esbuild-internal/test"
+	"github.com/joelmoss/esbuild-internal/ast"
+	"github.com/joelmoss/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/css_parser"
+	"github.com/joelmoss/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/test"
 )
 
 func expectPrintedCommon(t *testing.T, name string, contents string, expected string, options Options) {

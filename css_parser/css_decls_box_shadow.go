@@ -3,8 +3,8 @@ package css_parser
 import (
 	"strings"
 
-	"github.com/ije/esbuild-internal/css_ast"
-	"github.com/ije/esbuild-internal/css_lexer"
+	"github.com/joelmoss/esbuild-internal/css_ast"
+	"github.com/joelmoss/esbuild-internal/css_lexer"
 )
 
 func (p *parser) lowerAndMangleBoxShadow(tokens []css_ast.Token, wouldClipColor *bool) []css_ast.Token {

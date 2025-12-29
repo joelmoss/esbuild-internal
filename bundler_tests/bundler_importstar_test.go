@@ -3,7 +3,7 @@ package bundler_tests
 import (
 	"testing"
 
-	"github.com/ije/esbuild-internal/config"
+	"github.com/joelmoss/esbuild-internal/config"
 )
 
 var importstar_suite = suite{

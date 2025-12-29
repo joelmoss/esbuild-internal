@@ -6,8 +6,8 @@ package runtime
 // ES2015. Tree shaking automatically removes unused code from the runtime.
 
 import (
-	"github.com/ije/esbuild-internal/compat"
-	"github.com/ije/esbuild-internal/logger"
+	"github.com/joelmoss/esbuild-internal/compat"
+	"github.com/joelmoss/esbuild-internal/logger"
 )
 
 // The runtime source is always at a special index. The index is always zero
