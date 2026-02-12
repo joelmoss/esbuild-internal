@@ -380,6 +380,10 @@ func parseFile(args parseArgs) {
 	case config.LoaderDataURL:
 		mimeType := guessMimeType(ext, source.Contents)
 		url := helpers.EncodeStringAsShortestDataURL(mimeType, source.Contents)
+		if strings.HasPrefix(source.KeyPath.IgnoredSuffix, "#") {
+			// Preserve URL fragments as they are meaningful in CSS
+			url += source.KeyPath.IgnoredSuffix
+		}
 		expr := js_ast.Expr{Data: &js_ast.EString{Value: helpers.StringToUTF16(url)}}
 		ast := js_parser.LazyExportAST(args.log, source, js_parser.OptionsFromConfig(&args.options), expr, nil)
 		ast.URLForCSS = url
@@ -1188,6 +1192,7 @@ func runOnLoadPlugins(
 		PluginData: pluginData,
 	}
 	tracker := logger.MakeLineColumnTracker(importSource)
+	var prependParts []string
 
 	// Apply loader plugins in order until one succeeds
 	for _, plugin := range plugins {
@@ -1221,12 +1226,21 @@ func runOnLoadPlugins(
 				return loaderPluginResult{}, false
 			}
 
+			// Collect any Prepend text from this callback
+			if result.Prepend != nil && *result.Prepend != "" {
+				prependParts = append(prependParts, *result.Prepend)
+			}
+
 			// Otherwise, continue on to the next loader if this loader didn't succeed
 			if result.Contents == nil {
 				continue
 			}
 
-			source.Contents = *result.Contents
+			if len(prependParts) > 0 {
+				source.Contents = strings.Join(prependParts, "") + *result.Contents
+			} else {
+				source.Contents = *result.Contents
+			}
 			loader := result.Loader
 			if loader == config.LoaderNone {
 				loader = config.LoaderJS
@@ -1254,7 +1268,11 @@ func runOnLoadPlugins(
 	// Read normal modules from disk
 	if source.KeyPath.Namespace == "file" {
 		if contents, err, _ := fsCache.ReadFile(fs, source.KeyPath.Text); err == nil {
-			source.Contents = contents
+			if len(prependParts) > 0 {
+				source.Contents = strings.Join(prependParts, "") + contents
+			} else {
+				source.Contents = contents
+			}
 			return loaderPluginResult{
 				loader:        config.LoaderDefault,
 				absResolveDir: fs.Dir(source.KeyPath.Text),

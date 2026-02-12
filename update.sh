@@ -49,7 +49,7 @@ find "$srcdir" -type f | while IFS= read -r filepath; do
     # Strip internal/ prefix
     target="${filename#internal/}"
     mkdir -p "$(dirname "$target")"
-    sed 's|github.com/joelmoss/esbuild/internal|github.com/joelmoss/esbuild-internal|g' \
+    sed 's|github.com/evanw/esbuild/internal|github.com/joelmoss/esbuild-internal|g' \
       "$filepath" > "$target"
     echo "write $filename"
 
@@ -61,12 +61,12 @@ find "$srcdir" -type f | while IFS= read -r filepath; do
     # Strip pkg/ prefix
     target="${filename#pkg/}"
     mkdir -p "$(dirname "$target")"
-    sed 's|github.com/joelmoss/esbuild/internal|github.com/joelmoss/esbuild-internal|g' \
+    sed 's|github.com/evanw/esbuild/internal|github.com/joelmoss/esbuild-internal|g' \
       "$filepath" > "$target"
     echo "write $filename"
 
   elif [[ "$filename" == "go.mod" ]]; then
-    sed 's|github.com/joelmoss/esbuild|github.com/joelmoss/esbuild-internal|g' \
+    sed 's|github.com/evanw/esbuild|github.com/joelmoss/esbuild-internal|g' \
       "$filepath" > go.mod
     echo "write $filename"
 
@@ -91,5 +91,12 @@ done
 # git push origin
 # git tag "v${version}"
 # git push origin --tags
+
+# JJ Operations
+jj commit -m "v${version}"
+jj git push --all
+jj push origin
+jj tag "v${version}"
+jj push origin --tags
 
 echo "Updated to ${version}"
