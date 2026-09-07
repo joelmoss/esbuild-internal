@@ -86,17 +86,9 @@ for arg in "$@"; do
 done
 
 # Git operations
-# git add --all .
-# git commit -m "v${version}"
-# git push origin
-# git tag "v${version}"
-# git push origin --tags
-
-# JJ Operations
-jj commit -m "v${version}"
-jj git push --all
-jj push origin
-jj tag "v${version}"
-jj push origin --tags
+git add --all .
+git commit -m "v${version}"
+git tag "v${version}"
+git push origin HEAD --tags
 
 echo "Updated to ${version}"
