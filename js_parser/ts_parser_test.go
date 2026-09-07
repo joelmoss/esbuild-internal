@@ -744,15 +744,26 @@ func TestTSClass(t *testing.T) {
 	expectParseErrorTS(t, "class Foo { constructor(private) {} }", "<stdin>: ERROR: \"private\""+reservedWordError)
 	expectPrintedTS(t, "class Foo { constructor(readonly) {} }", "class Foo {\n  constructor(readonly) {\n  }\n}\n")
 	expectPrintedTS(t, "class Foo { constructor(override) {} }", "class Foo {\n  constructor(override) {\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(public x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(protected x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(private x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(override x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(public readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(protected readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(private readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
-	expectPrintedTS(t, "class Foo { constructor(override readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+
+	expectPrintedTS(t, "class Foo { constructor(public x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(protected x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(private x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(override x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(public readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(protected readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(private readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+	expectPrintedTS(t, "class Foo { constructor(override readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n  x;\n}\n")
+
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(public x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(protected x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(private x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(override x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(public readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(protected readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(private readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
+	expectPrintedAssignSemanticsTS(t, "class Foo { constructor(override readonly x) {} }", "class Foo {\n  constructor(x) {\n    this.x = x;\n  }\n}\n")
 
 	expectParseErrorTS(t, "class Foo { constructor(public {x}) {} }", "<stdin>: ERROR: Expected identifier but found \"{\"\n")
 	expectParseErrorTS(t, "class Foo { constructor(protected {x}) {} }", "<stdin>: ERROR: Expected identifier but found \"{\"\n")
@@ -2865,6 +2876,8 @@ func TestTSImportEquals(t *testing.T) {
 `
 	expectParseErrorTS(t, "import x = require('y'); x = require('z')", errorText)
 	expectParseErrorTS(t, "import x = y.z; x = z.y", errorText)
+
+	expectPrintedWithUnsupportedFeaturesTS(t, compat.ConstAndLet, "import x = require('y')", "var x = require(\"y\");\n")
 }
 
 func TestTSImportEqualsInNamespace(t *testing.T) {
@@ -2893,6 +2906,13 @@ func TestTSImportEqualsInNamespace(t *testing.T) {
 	expectParseErrorTS(t, "namespace ns { export import foo from 'bar' }", "<stdin>: ERROR: Expected \"=\" but found \"from\"\n")
 	expectParseErrorTS(t, "namespace ns { { import foo = bar } }", "<stdin>: ERROR: Unexpected \"foo\"\n")
 	expectParseErrorTS(t, "namespace ns { { export import foo = bar } }", "<stdin>: ERROR: Unexpected \"export\"\n")
+
+	expectPrintedWithUnsupportedFeaturesTS(t, compat.ConstAndLet, "namespace ns { import x = require('y'); x }", `var ns;
+((ns) => {
+  var x = require("y");
+  x;
+})(ns || (ns = {}));
+`)
 }
 
 func TestTSTypeOnlyImport(t *testing.T) {
@@ -3303,4 +3323,35 @@ func TestTSUsing(t *testing.T) {
 	expectPrintedTS(t, "using x: any = y, z: any = _", "using x = y, z = _;\n")
 	expectParseErrorTS(t, "export using x: any = y", "<stdin>: ERROR: Unexpected \"using\"\n")
 	expectParseErrorTS(t, "namespace ns { export using x: any = y }", "<stdin>: ERROR: Unexpected \"using\"\n")
+}
+
+func TestTSWarningBinaryOperatorAfterCast(t *testing.T) {
+	note := "<stdin>: NOTE: This is a syntax error in newer versions of TypeScript because the type cast has unintuitive precedence in this case. " +
+		"Surround the inner expression in parentheses to silence this warning:\n"
+
+	// See: https://github.com/microsoft/TypeScript/issues/63527
+	expectParseErrorTS(t, "1 as number + 2", "")
+	expectParseErrorTS(t, "1 + 2 as number + 3", "")
+	expectParseErrorTS(t, "1 + 2 as number - 3", "")
+	expectParseErrorTS(t, "1 * 2 as number * 3", "")
+	expectParseErrorTS(t, "1 * 2 as number + 3", "")
+	expectParseErrorTS(t, "1 + 2 as number * 3", "<stdin>: WARNING: Operator \"*\" should not directly follow a TypeScript type cast after the \"+\" operator\n"+note)
+	expectParseErrorTS(t, "(1 + 2) as number * 3", "")
+	expectParseErrorTS(t, "(1 + 2 as number) * 3", "")
+	expectParseErrorTS(t, "1 satisfies number + 2", "")
+	expectParseErrorTS(t, "1 + 2 satisfies number + 3", "")
+	expectParseErrorTS(t, "1 + 2 satisfies number - 3", "")
+	expectParseErrorTS(t, "1 * 2 satisfies number * 3", "")
+	expectParseErrorTS(t, "1 * 2 satisfies number + 3", "")
+	expectParseErrorTS(t, "1 + 2 satisfies number * 3", "<stdin>: WARNING: Operator \"*\" should not directly follow a TypeScript type cast after the \"+\" operator\n"+note)
+	expectParseErrorTS(t, "(1 + 2) satisfies number * 3", "")
+	expectParseErrorTS(t, "(1 + 2 satisfies number) * 3", "")
+
+	// See: https://github.com/microsoft/TypeScript/issues/63661
+	expectParseErrorTS(t, "1 ** 2 as number ** 3", "<stdin>: WARNING: Operator \"**\" should not directly follow a TypeScript type cast after the \"**\" operator\n"+note)
+	expectParseErrorTS(t, "(1 ** 2) as number ** 3", "")
+	expectParseErrorTS(t, "(1 ** 2 as number) ** 3", "")
+	expectParseErrorTS(t, "1 ** 2 satisfies number ** 3", "<stdin>: WARNING: Operator \"**\" should not directly follow a TypeScript type cast after the \"**\" operator\n"+note)
+	expectParseErrorTS(t, "(1 ** 2) satisfies number ** 3", "")
+	expectParseErrorTS(t, "(1 ** 2 satisfies number) ** 3", "")
 }

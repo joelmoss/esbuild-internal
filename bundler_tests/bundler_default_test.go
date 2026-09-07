@@ -2746,6 +2746,32 @@ func TestManyEntryPoints(t *testing.T) {
 	})
 }
 
+func TestRenameNestedVar(t *testing.T) {
+	default_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				import { foo } from './foo'
+				var topLevel = 0
+				{ var nested = 1 }
+				function fn() { var inner = 2 }
+				foo(topLevel, nested, fn)
+			`,
+			"/foo.js": `
+				export function foo(a, b) {}
+				var topLevel = 0
+				{ var nested = 1 }
+				function fn() { var inner = 2 }
+				foo(topLevel, nested, fn)
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			AbsOutputFile: "/out.js",
+		},
+	})
+}
+
 func TestRenamePrivateIdentifiersNoBundle(t *testing.T) {
 	default_suite.expectBundled(t, bundled{
 		files: map[string]string{
@@ -4347,6 +4373,39 @@ func TestTopLevelAwaitAllowedImportWithSplitting(t *testing.T) {
 			OutputFormat:  config.FormatESModule,
 			CodeSplitting: true,
 			AbsOutputDir:  "/out",
+		},
+	})
+}
+
+// https://github.com/evanw/esbuild/issues/4498
+func TestTopLevelAwaitCyclicDependenciesIssue4498(t *testing.T) {
+	default_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.mjs": `
+				await import("./main.mjs");
+			`,
+			"/main.mjs": `
+				import { a } from "./a.mjs";
+				console.log(a());
+			`,
+			"/a.mjs": `
+				import { b } from "./b.mjs";
+				import { tla } from "./dep.mjs";
+				export function a() { return b() + tla; }
+			`,
+			"/b.mjs": `
+				import { a } from "./a.mjs";
+				export function b() { return typeof a; }
+			`,
+			"/dep.mjs": `
+				export const tla = await Promise.resolve("x");
+			`,
+		},
+		entryPaths: []string{"/entry.mjs"},
+		options: config.Options{
+			Mode:         config.ModeBundle,
+			OutputFormat: config.FormatESModule,
+			AbsOutputDir: "/out",
 		},
 	})
 }
@@ -9110,7 +9169,7 @@ func TestForbidStringExportNamesNoBundle(t *testing.T) {
 			UnsupportedJSFeatures: compat.ArbitraryModuleNamespaceNames,
 		},
 		expectedCompileLog: `entry.js: ERROR: Using the string "not ok" as an export name is not supported in the configured target environment
-entry.js: ERROR: Using the string "same name" as an export name is not supported in the configured target environment
+entry.js: ERROR: Using the string "same name" as an import name is not supported in the configured target environment
 entry.js: ERROR: Using the string "name 1" as an import name is not supported in the configured target environment
 entry.js: ERROR: Using the string "name 2" as an export name is not supported in the configured target environment
 entry.js: ERROR: Using the string "name space" as an export name is not supported in the configured target environment
@@ -9225,6 +9284,26 @@ func TestInjectWithStringExportNameBundle(t *testing.T) {
 		entryPaths: []string{"/entry.js"},
 		options: config.Options{
 			Mode:                  config.ModeBundle,
+			AbsOutputFile:         "/out.js",
+			InjectPaths:           []string{"/inject.js"},
+			UnsupportedJSFeatures: compat.ArbitraryModuleNamespaceNames,
+		},
+	})
+}
+
+func TestInjectWithStringReExportNameNoBundle(t *testing.T) {
+	default_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.js": `
+				console.log(test)
+			`,
+			"/inject.js": `
+				export { fn as "console.log" } from 'pkg'
+			`,
+		},
+		entryPaths: []string{"/entry.js"},
+		options: config.Options{
+			Mode:                  config.ModePassThrough,
 			AbsOutputFile:         "/out.js",
 			InjectPaths:           []string{"/inject.js"},
 			UnsupportedJSFeatures: compat.ArbitraryModuleNamespaceNames,

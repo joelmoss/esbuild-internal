@@ -1065,7 +1065,7 @@ func TestTSExperimentalDecorators(t *testing.T) {
 			`,
 			"/all_computed.ts": `
 				@x?.[_ + 'y']()
-				@new y?.[_ + 'x']()
+				@new y()?.[_ + 'x']()
 				export default class Foo {
 					@x @y [mUndef()]
 					@x @y [mDef()] = 1
@@ -2973,6 +2973,114 @@ func TestTSImportInNodeModulesNameCollisionWithCSS(t *testing.T) {
 			`,
 			"/node_modules/pkg/js_ts.ts": `
 				TEST FAILED
+			`,
+		},
+		entryPaths: []string{"/entry.ts"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			AbsOutputFile: "/out.js",
+		},
+	})
+}
+
+// See: https://github.com/evanw/esbuild/issues/4421
+func TestParameterPropsUseDefineForClassFieldsTrue(t *testing.T) {
+	ts_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.ts": `
+				class Foo {
+					static { console.log('a') }
+					a = 1
+					static { console.log('b') }
+					constructor(public b1 = 2.1, public b2 = 2.2) {
+					}
+					static { console.log('c') }
+					c = 3
+				}
+			`,
+		},
+		entryPaths: []string{"/entry.ts"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			AbsOutputFile: "/out.js",
+			TS: config.TSOptions{Config: config.TSConfig{
+				UseDefineForClassFields: config.True,
+			}},
+		},
+	})
+}
+
+// See: https://github.com/evanw/esbuild/issues/4421
+func TestParameterPropsUseDefineForClassFieldsFalse(t *testing.T) {
+	ts_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.ts": `
+				class Foo {
+					static { console.log('a') }
+					a = 1
+					static { console.log('b') }
+					constructor(public b1 = 2.1, public b2 = 2.2) {
+					}
+					static { console.log('c') }
+					c = 3
+				}
+			`,
+		},
+		entryPaths: []string{"/entry.ts"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			AbsOutputFile: "/out.js",
+			TS: config.TSOptions{Config: config.TSConfig{
+				UseDefineForClassFields: config.False,
+			}},
+		},
+	})
+}
+
+// See: https://github.com/evanw/esbuild/issues/4421
+func TestParameterPropsUseDefineForClassFieldsTrueLowered(t *testing.T) {
+	ts_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.ts": `
+				class Foo {
+					static { console.log('a') }
+					a = 1
+					static { console.log('b') }
+					constructor(public b1 = 2.1, public b2 = 2.2) {
+					}
+					static { console.log('c') }
+					c = 3
+				}
+			`,
+		},
+		entryPaths: []string{"/entry.ts"},
+		options: config.Options{
+			Mode:          config.ModeBundle,
+			AbsOutputFile: "/out.js",
+			TS: config.TSOptions{Config: config.TSConfig{
+				UseDefineForClassFields: config.True,
+			}},
+			UnsupportedJSFeatures: compat.ClassField,
+		},
+	})
+}
+
+// See: https://github.com/evanw/esbuild/issues/4507
+func TestTreeShakingImportAliasIssue4507(t *testing.T) {
+	ts_suite.expectBundled(t, bundled{
+		files: map[string]string{
+			"/entry.ts": `
+				import Base from './dep.js';
+				import Alias = Base.SomeType;
+
+				export function make() {
+					return new Base();
+				}
+			`,
+			"/dep.js": `
+				export default class Base {
+					static hello() { return 'dep code is present'; }
+				}
 			`,
 		},
 		entryPaths: []string{"/entry.ts"},

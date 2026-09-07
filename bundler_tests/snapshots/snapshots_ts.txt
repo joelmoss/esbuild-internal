@@ -116,6 +116,74 @@ var foo4 = 123;
 console.log(a_exports, b_exports, c_exports, d_exports);
 
 ================================================================================
+TestParameterPropsUseDefineForClassFieldsFalse
+---------- /out.js ----------
+// entry.ts
+var Foo = class {
+  constructor(b1 = 2.1, b2 = 2.2) {
+    this.b1 = b1;
+    this.b2 = b2;
+    this.a = 1;
+    this.c = 3;
+  }
+  static {
+    console.log("a");
+  }
+  static {
+    console.log("b");
+  }
+  static {
+    console.log("c");
+  }
+};
+
+================================================================================
+TestParameterPropsUseDefineForClassFieldsTrue
+---------- /out.js ----------
+// entry.ts
+var Foo = class {
+  constructor(b1 = 2.1, b2 = 2.2) {
+    this.b1 = b1;
+    this.b2 = b2;
+  }
+  b1;
+  b2;
+  static {
+    console.log("a");
+  }
+  a = 1;
+  static {
+    console.log("b");
+  }
+  static {
+    console.log("c");
+  }
+  c = 3;
+};
+
+================================================================================
+TestParameterPropsUseDefineForClassFieldsTrueLowered
+---------- /out.js ----------
+// entry.ts
+var Foo = class {
+  constructor(b1 = 2.1, b2 = 2.2) {
+    __publicField(this, "b1", b1);
+    __publicField(this, "b2", b2);
+    __publicField(this, "a", 1);
+    __publicField(this, "c", 3);
+  }
+  static {
+    console.log("a");
+  }
+  static {
+    console.log("b");
+  }
+  static {
+    console.log("c");
+  }
+};
+
+================================================================================
 TestTSAbstractClassFieldUseAssign
 ---------- /out.js ----------
 const keepThis = /* @__PURE__ */ Symbol("keepThis");
@@ -804,7 +872,7 @@ __decorateClass([
 ], Foo2, _a, 2);
 Foo2 = __decorateClass([
   x?.[_ + "y"](),
-  new y?.[_ + "x"]()
+  new y()?.[_ + "x"]()
 ], Foo2);
 
 // a.ts
@@ -1538,7 +1606,7 @@ console.log(a, b, c, d, e, real);
 ================================================================================
 TestTSMinifiedBundleCommonJS
 ---------- /out.js ----------
-var t=e(r=>{r.foo=function(){return 123}});var n=e((l,c)=>{c.exports={test:!0}});var{foo:f}=t();console.log(f(),n());
+var t=e(r=>{r.foo=function(){return 123}});var n=e((q,f)=>{f.exports={test:!0}});var{foo:i}=t();console.log(i(),n());
 
 ================================================================================
 TestTSMinifiedBundleES6
@@ -2012,10 +2080,10 @@ var Foo = class {
 };
 new Foo(foo(objFoo));
 if (nested) {
-  let bar = function(x = this) {
+  let bar2 = function(x = this) {
     console.log(this);
   };
-  bar2 = bar;
+  bar = bar2;
   const objBar = {
     foo(x = this) {
       console.log(this);
@@ -2035,9 +2103,9 @@ if (nested) {
       console.log(this);
     }
   }
-  new Bar(bar(objBar));
+  new Bar(bar2(objBar));
 }
-var bar2;
+var bar;
 
 ================================================================================
 TestThisInsideFunctionTSNoBundle
@@ -2161,10 +2229,10 @@ var Foo = class {
 };
 new Foo(foo(objFoo));
 if (nested) {
-  let bar = function(x = this) {
+  let bar2 = function(x = this) {
     console.log(this);
   };
-  bar2 = bar;
+  bar = bar2;
   const objBar = {
     foo(x = this) {
       console.log(this);
@@ -2180,6 +2248,24 @@ if (nested) {
       console.log(this);
     }
   }
-  new Bar(bar(objBar));
+  new Bar(bar2(objBar));
 }
-var bar2;
+var bar;
+
+================================================================================
+TestTreeShakingImportAliasIssue4507
+---------- /out.js ----------
+// dep.js
+var Base = class {
+  static hello() {
+    return "dep code is present";
+  }
+};
+
+// entry.ts
+function make() {
+  return new Base();
+}
+export {
+  make
+};

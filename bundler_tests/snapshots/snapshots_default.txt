@@ -2250,6 +2250,12 @@ var fn = (...args) => old.apply(console, ["log:"].concat(args));
 fn(test);
 
 ================================================================================
+TestInjectWithStringReExportNameNoBundle
+---------- /out.js ----------
+import { fn } from "pkg";
+fn(test);
+
+================================================================================
 TestJSXAutomaticImportsCommonJS
 ---------- /out.js ----------
 // custom-react.js
@@ -4050,6 +4056,8 @@ class Foo {
     this.KEEP_FIELD = KEEP_FIELD;
     this.a = MANGLE_FIELD_;
   }
+  KEEP_FIELD;
+  MANGLE_FIELD_;
 }
 let foo = new Foo();
 console.log(foo.KEEP_FIELD, foo.a);
@@ -5193,7 +5201,7 @@ a {
 ================================================================================
 TestMinifiedBundleCommonJS
 ---------- /out.js ----------
-var t=e(r=>{r.foo=function(){return 123}});var n=e((l,c)=>{c.exports={test:!0}});var{foo:f}=t();console.log(f(),n());
+var t=e(r=>{r.foo=function(){return 123}});var n=e((q,f)=>{f.exports={test:!0}});var{foo:i}=t();console.log(i(),n());
 
 ================================================================================
 TestMinifiedBundleES6
@@ -5278,7 +5286,7 @@ TestMinifyIdentifiersImportPathFrequencyAnalysis
 var o=123;console.log(o,"no identifier in this file should be named W, X, Y, or Z");
 
 ---------- /out/require.js ----------
-var i=r((t,e)=>{e.exports=123});var s=i();console.log(s,"no identifier in this file should be named A, B, C, or D");
+var i=s((d,e)=>{e.exports=123});var l=i();console.log(l,"no identifier in this file should be named A, B, C, or D");
 
 ================================================================================
 TestMinifyNestedLabelsNoBundle
@@ -5890,6 +5898,33 @@ foo: {
 }
 
 ================================================================================
+TestRenameNestedVar
+---------- /out.js ----------
+// foo.js
+function foo(a, b) {
+}
+var topLevel = 0;
+{
+  nested = 1;
+}
+var nested;
+function fn() {
+  var inner = 2;
+}
+foo(topLevel, nested, fn);
+
+// entry.js
+var topLevel2 = 0;
+{
+  nested2 = 1;
+}
+var nested2;
+function fn2() {
+  var inner = 2;
+}
+foo(topLevel2, nested2, fn2);
+
+================================================================================
 TestRenamePrivateIdentifiersNoBundle
 ---------- /out.js ----------
 class Foo {
@@ -6436,10 +6471,10 @@ var Foo = class {
 };
 new Foo(foo(objFoo));
 if (nested) {
-  let bar = function(x = this) {
+  let bar2 = function(x = this) {
     console.log(this);
   };
-  bar2 = bar;
+  bar = bar2;
   const objBar = {
     foo(x = this) {
       console.log(this);
@@ -6455,9 +6490,9 @@ if (nested) {
       console.log(this);
     }
   }
-  new Bar(bar(objBar));
+  new Bar(bar2(objBar));
 }
-var bar2;
+var bar;
 
 ================================================================================
 TestThisOutsideFunction
@@ -6863,6 +6898,50 @@ if (false) foo;
 if (false) for (foo of bar) ;
 
 ================================================================================
+TestTopLevelAwaitCyclicDependenciesIssue4498
+---------- /out/entry.js ----------
+// b.mjs
+function b() {
+  return typeof a;
+}
+var init_b = __esm({
+  async "b.mjs"() {
+    await init_a();
+  }
+});
+
+// dep.mjs
+var tla;
+var init_dep = __esm({
+  async "dep.mjs"() {
+    tla = await Promise.resolve("x");
+  }
+});
+
+// a.mjs
+function a() {
+  return b() + tla;
+}
+var init_a = __esm({
+  async "a.mjs"() {
+    await init_b();
+    await init_dep();
+  }
+});
+
+// main.mjs
+var main_exports = {};
+var init_main = __esm({
+  async "main.mjs"() {
+    await init_a();
+    console.log(a());
+  }
+});
+
+// entry.mjs
+await init_main().then(() => main_exports);
+
+================================================================================
 TestTopLevelAwaitESM
 ---------- /out.js ----------
 // entry.js
@@ -7053,9 +7132,9 @@ var k;
 ---------- /out/nested.js ----------
 // nested.js
 if (true) {
-  let l = function() {
+  let l2 = function() {
   };
-  l2 = l;
+  l = l2;
   for (; 0; ) ;
   for ({ c, x: [d] } = {}; 0; ) ;
   for (e of []) ;
@@ -7076,7 +7155,7 @@ var h;
 var i;
 var j;
 var k;
-var l2;
+var l;
 
 ---------- /out/let.js ----------
 // let.js
@@ -7144,9 +7223,9 @@ function l() {
 
 ---------- /out/nested.js ----------
 if (true) {
-  let l = function() {
+  let l2 = function() {
   };
-  var l2 = l;
+  var l = l2;
   var a;
   for (var b; 0; ) ;
   for (var { c, x: [d] } = {}; 0; ) ;
