@@ -17,8 +17,9 @@ release (e.g. `609683d` for v0.28.2) and the fork's feature commits listed oldes
 ```sh
 git checkout -b release/0.28.2 <upstream-sha>
 git cherry-pick <fork-commits...>
-git tag "v0.28.2-$(git rev-parse --short=8 HEAD)"
-git push origin release/0.28.2 --tags
+tag="v0.28.2-$(git rev-parse --short=8 HEAD)"
+git tag "$tag"
+git push origin release/0.28.2 "$tag"
 ```
 
 Then here, with the full suffixed tag (no `v` prefix):
@@ -28,6 +29,11 @@ Then here, with the full suffixed tag (no `v` prefix):
 ```
 
 `update.sh` rewrites the packages, then commits, tags and pushes this repo.
+
+Push the release tag explicitly, never with `--tags`. Both repos hold upstream tags
+locally (`v0.28.2`, `v0.27.3`), and pushing those publishes bare version tags — in this
+repo that is worse than cosmetic, since a bare `v0.27.3` outranks a suffixed
+`v0.28.2-<hash>` when Go resolves `@latest`.
 
 ### Version naming
 

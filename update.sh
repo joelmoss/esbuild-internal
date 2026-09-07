@@ -89,6 +89,6 @@ done
 git add --all .
 git commit -m "v${version}"
 git tag "v${version}"
-git push origin HEAD --tags
+git push origin HEAD "v${version}"
 
 echo "Updated to ${version}"
