@@ -7,7 +7,7 @@ package ast
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	"path/filepath"
+	pathpkg "path"
 	"sort"
 	"strings"
 
@@ -829,14 +829,52 @@ func (minifier NameMinifier) NumberToMinifiedName(i int) string {
 	return name.String()
 }
 
+// A local CSS name is built from a file path, and a consumer that rebuilds these names in another
+// language has only that path string to work from - so the same file must hash the same way
+// whichever OS spelled its path.
+//
+// On Windows it did not: the linker hashes PrettyPaths.Abs, which is the platform's own spelling,
+// while everything mirroring it hashed the portable one, and the stylesheet's class names silently
+// stopped matching the ones the page referenced.
+//
+// Only a Windows absolute path is folded - one with a drive or a UNC root - because that is the
+// only place "\\" is a separator. Everywhere else it is a legal file name character: folding it
+// unconditionally made `a\b.module.css` and `a/b.module.css` the same module on Linux and macOS,
+// and hashed such a path differently from a mirror that reads it as written. Decided from the
+// path rather than the host OS, so a mock Windows file system in the tests behaves as a real one.
+//
+// A relative path is left alone. The linker's appendice input is PrettyPaths.Rel, which
+// MakePrettyPaths already writes with "/".
+func normalizeCssLocalPath(path string) string {
+	if isWindowsAbsPath(path) {
+		return strings.ReplaceAll(path, "\\", "/")
+	}
+
+	return path
+}
+
+// A drive root (`C:\` or `C:/`) or a UNC root (`\\server`).
+func isWindowsAbsPath(path string) bool {
+	if len(path) >= 3 && path[1] == ':' && (path[2] == '\\' || path[2] == '/') {
+		c := path[0]
+		return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z'
+	}
+
+	return strings.HasPrefix(path, `\\`)
+}
+
 func CssLocalHash(path string) string {
-	hash := sha1.Sum([]byte(path))
+	hash := sha1.Sum([]byte(normalizeCssLocalPath(path)))
 	return hex.EncodeToString(hash[:])[0:8]
 }
 
 func CssLocalAppendice(path string) string {
-	// Remove the file extension
-	if ext := filepath.Ext(path); ext != "" {
+	path = normalizeCssLocalPath(path)
+
+	// Remove the file extension. With the "path" package, because the OS-specific one is disallowed
+	// in this tree (see the no-filepath target in the Makefile). Outside Windows the two agree, and
+	// on Windows the linker hands this a relative path MakePrettyPaths has already written with "/".
+	if ext := pathpkg.Ext(path); ext != "" {
 		path = path[:len(path)-len(ext)]
 	}
 

@@ -895,7 +895,11 @@ func cloneMangleCache(log logger.Log, mangleCache map[string]interface{}) map[st
 ////////////////////////////////////////////////////////////////////////////////
 // Build API
 
-func contextImpl(buildOpts BuildOptions) (*internalContext, []Message) {
+// "oneShot" is true for Build(), whose context lives for exactly one rebuild. Only then is it safe
+// for the file system that plugin "resolve" calls read through to cache directory listings: the
+// cache is discarded with the context, so nothing can go stale. A long-lived Context() must keep
+// re-reading them.
+func contextImpl(buildOpts BuildOptions, oneShot bool) (*internalContext, []Message) {
 	logOptions := logger.OutputOptions{
 		IncludeSource: true,
 		MessageLimit:  buildOpts.LogLimit,
@@ -911,10 +915,10 @@ func contextImpl(buildOpts BuildOptions) (*internalContext, []Message) {
 	realFS, err := fs.RealFS(fs.RealFSOptions{
 		AbsWorkingDir: absWorkingDir,
 
-		// This is a long-lived file system object so do not cache calls to
-		// ReadDirectory() (they are normally cached for the duration of a build
-		// for performance).
-		DoNotCache: true,
+		// A long-lived file system object must not cache calls to ReadDirectory() (they are
+		// normally cached for the duration of a build for performance). A one-shot build's context
+		// is discarded after a single rebuild, so it can.
+		DoNotCache: !oneShot,
 	})
 	if err != nil {
 		log := logger.NewStderrLog(logOptions)
@@ -1883,10 +1887,29 @@ type pluginImpl struct {
 	plugin config.Plugin
 }
 
+// A panic in a plugin callback used to abort the whole process: esbuild runs callbacks on its
+// own goroutines, and a recover anywhere else cannot see them. Each callback wrapper below
+// recovers into this message, so the build fails the way a returned error fails it. Same shape
+// as parseFile's own recover: short text, stack in a note. The "panic:" prefix is relied on by
+// callers that need to tell a panic from an ordinary resolve failure.
+func pluginPanicMsg(r interface{}, callback string) logger.Msg {
+	return logger.Msg{
+		Kind:  logger.Error,
+		Data:  logger.MsgData{Text: fmt.Sprintf("panic: %v (in %s callback)", r, callback)},
+		Notes: []logger.MsgData{{Text: helpers.PrettyPrintedStack()}},
+	}
+}
+
 func (impl *pluginImpl) onStart(callback func() (OnStartResult, error)) {
 	impl.plugin.OnStart = append(impl.plugin.OnStart, config.OnStart{
 		Name: impl.plugin.Name,
 		Callback: func() (result config.OnStartResult) {
+			defer func() {
+				if r := recover(); r != nil {
+					result = config.OnStartResult{Msgs: []logger.Msg{pluginPanicMsg(r, "OnStart")}}
+				}
+			}()
+
 			response, err := callback()
 
 			if err != nil {
@@ -1959,6 +1982,12 @@ func (impl *pluginImpl) onResolve(options OnResolveOptions, callback func(OnReso
 		Filter:    filter,
 		Namespace: options.Namespace,
 		Callback: func(args config.OnResolveArgs) (result config.OnResolveResult) {
+			defer func() {
+				if r := recover(); r != nil {
+					result = config.OnResolveResult{Msgs: []logger.Msg{pluginPanicMsg(r, "OnResolve")}}
+				}
+			}()
+
 			response, err := callback(OnResolveArgs{
 				Path:       args.Path,
 				Importer:   args.Importer.Text,
@@ -2036,6 +2065,12 @@ func (impl *pluginImpl) onLoad(options OnLoadOptions, callback func(OnLoadArgs) 
 		Filter:    filter,
 		Namespace: options.Namespace,
 		Callback: func(args config.OnLoadArgs) (result config.OnLoadResult) {
+			defer func() {
+				if r := recover(); r != nil {
+					result = config.OnLoadResult{Msgs: []logger.Msg{pluginPanicMsg(r, "OnLoad")}}
+				}
+			}()
+
 			response, err := callback(OnLoadArgs{
 				Path:       args.Path.Text,
 				Namespace:  args.Path.Namespace,
