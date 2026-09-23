@@ -42,6 +42,18 @@ commit, e.g. `0.28.2-bc2e97e8`. Always use the suffixed tag: bare version tags i
 (`v0.27.3`) point at plain upstream commits and carry none of the fork's changes, so
 `./update.sh 0.28.2` would silently produce an unmodified copy.
 
+**The suffixes do not sort by age.** Go reads everything after the `-` as a semver
+pre-release identifier and compares it as text, so a hash tells it nothing about which
+release is newer: `v0.28.2-b42139ec` outranks the later `v0.28.2-2f205be1`, which outranks
+the later still `v0.28.2-28d87ca1`. Two consequences:
+
+- Always name the exact version when moving a consumer to a new release -
+  `go get github.com/joelmoss/esbuild-internal@v0.28.2-<hash>` - and expect Go to call the
+  move a downgrade about half the time. That message is the ordering, not a mistake.
+- Never let anything pick "the newest" for you. `go get -u`, `go list -m -u` and dependency
+  bots all choose the highest-sorting tag, which is an arbitrary older release, so they can
+  silently move a consumer back onto code missing later fixes.
+
 ### Keeping the cherry-pick cheap
 
 The cherry-pick step exists only because the fork's feature branches are rebased onto
