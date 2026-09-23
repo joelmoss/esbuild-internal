@@ -2288,12 +2288,12 @@ TestDeterministicLocalCSSNamingSingleEntryWithImportMinifyIdentifiersUnix
 TestDeterministicLocalCSSNamingSingleEntryWithImportMinifyIdentifiersWin
 ---------- /out/entry.css ----------
 /* other/imported.css */
-.imported_3931eb68 {
+.imported_e8fb34a7 {
   color: blue;
 }
 
 /* entry.css */
-.entry_3931eb68 {
+.entry_e8fb34a7 {
   color: red;
 }
 
@@ -2326,12 +2326,12 @@ TestDeterministicLocalCSSNamingSingleEntryWithImportUnix
 TestDeterministicLocalCSSNamingSingleEntryWithImportWin
 ---------- /out/entry.css ----------
 /* other/imported.css */
-.imported_3931eb68_entry {
+.imported_e8fb34a7_entry {
   color: blue;
 }
 
 /* entry.css */
-.entry_3931eb68_entry {
+.entry_e8fb34a7_entry {
   color: red;
 }
 
@@ -3417,9 +3417,9 @@ console.log("file 2", e, n.b);
 TestImportLocalCSSFromJSDeterministicLocalCSSNamingMinifyIdentifiersWin
 ---------- /out/entry.js ----------
 // dir1/style.css
-var t = "button_337a526c";
+var t = "button_3b7f7807";
 var l = {
-  a: "a_337a526c",
+  a: "a_3b7f7807",
   button: t
 };
 
@@ -3427,9 +3427,9 @@ var l = {
 console.log("file 1", t, l.a);
 
 // dir2/style.css
-var e = "button_9b40f135";
+var e = "button_ec1ae3bb";
 var n = {
-  b: "b_9b40f135",
+  b: "b_ec1ae3bb",
   button: e
 };
 
@@ -3438,18 +3438,18 @@ console.log("file 2", e, n.b);
 
 ---------- /out/entry.css ----------
 /* dir1/style.css */
-.a_337a526c {
+.a_3b7f7807 {
   color: red;
 }
-.button_337a526c {
+.button_3b7f7807 {
   display: none;
 }
 
 /* dir2/style.css */
-.b_9b40f135 {
+.b_ec1ae3bb {
   color: blue;
 }
-.button_9b40f135 {
+.button_ec1ae3bb {
   display: none;
 }
 
@@ -3497,9 +3497,9 @@ console.log("file 2", button2, style_default2.b);
 TestImportLocalCSSFromJSDeterministicLocalCSSNamingWin
 ---------- /out/entry.js ----------
 // dir1/style.css
-var button = "button_337a526c_dir1-style";
+var button = "button_3b7f7807_dir1-style";
 var style_default = {
-  a: "a_337a526c_dir1-style",
+  a: "a_3b7f7807_dir1-style",
   button
 };
 
@@ -3507,9 +3507,9 @@ var style_default = {
 console.log("file 1", button, style_default.a);
 
 // dir2/style.css
-var button2 = "button_9b40f135_dir2-style";
+var button2 = "button_ec1ae3bb_dir2-style";
 var style_default2 = {
-  b: "b_9b40f135_dir2-style",
+  b: "b_ec1ae3bb_dir2-style",
   button: button2
 };
 
@@ -3518,18 +3518,18 @@ console.log("file 2", button2, style_default2.b);
 
 ---------- /out/entry.css ----------
 /* dir1/style.css */
-.a_337a526c_dir1-style {
+.a_3b7f7807_dir1-style {
   color: red;
 }
-.button_337a526c_dir1-style {
+.button_3b7f7807_dir1-style {
   display: none;
 }
 
 /* dir2/style.css */
-.b_9b40f135_dir2-style {
+.b_ec1ae3bb_dir2-style {
   color: blue;
 }
-.button_9b40f135_dir2-style {
+.button_ec1ae3bb_dir2-style {
   display: none;
 }
 
@@ -3710,64 +3710,6 @@ console.log("bar");
         }
       },
       "bytes": 36
-    }
-  }
-}
-
-================================================================================
-TestMetafileCSSBundleWin
----------- /out/entry.js ----------
-// entry.js
-console.log("entry");
-
----------- /out/entry.css ----------
-/* common.css */
-body {
-  color: red;
-}
----------- metafile.json ----------
-{
-  "inputs": {
-    "C:\\common.css": {
-      "bytes": 28,
-      "imports": []
-    },
-    "C:\\entry.js": {
-      "bytes": 55,
-      "imports": [
-        {
-          "path": "C:\\common.css",
-          "kind": "import-statement",
-          "original": "./common.css"
-        }
-      ],
-      "format": "esm"
-    }
-  },
-  "outputs": {
-    "C:\\out\\entry.js": {
-      "imports": [],
-      "exports": [],
-      "entryPoint": "C:\\entry.js",
-      "cssBundle": "C:\\out\\entry.css",
-      "inputs": {
-        "C:\\common.css": {
-          "bytesInOutput": 0
-        },
-        "C:\\entry.js": {
-          "bytesInOutput": 22
-        }
-      },
-      "bytes": 34
-    },
-    "C:\\out\\entry.css": {
-      "imports": [],
-      "inputs": {
-        "C:\\common.css": {
-          "bytesInOutput": 23
-        }
-      },
-      "bytes": 40
     }
   }
 }
